@@ -57,27 +57,25 @@ def print_info():
 
 
 while True:
-    print('Last awakening due to:', alarm.wake_alarm)
+    print("Last awakening due to:", alarm.wake_alarm)
     print(time.monotonic(), "rainbow")
     print_info()
 
-    for _ in range(3):
+    for _ in range(5):
         rainbow(0.005)
         rainbow(0.005, range(255, -1, -1))
 
     print_info()
 
-    time_alarm = alarm.time.TimeAlarm(monotonic_time=time.monotonic() + 10)
+    time_alarm = alarm.time.TimeAlarm(monotonic_time=time.monotonic() + 5)
     boot_button_alarm = alarm.pin.PinAlarm(boot_pin, value=False, pull=True)
     alarm.light_sleep_until_alarms(time_alarm, boot_button_alarm)
-    # TODO how to deep sleep until the BOOT button is pressed? may not be possible
-    # alternative: press RESET
 
     print(time.monotonic(), "random rainbow")
-    print('Last awakening due to:', alarm.wake_alarm)
+    print("Last awakening due to:", alarm.wake_alarm)
     print_info()
 
     rainbow(0.05, [random.randint(0, 255) for _ in range(100)])
 
-    time_alarm = alarm.time.TimeAlarm(monotonic_time=time.monotonic() + 5)
-    alarm.exit_and_deep_sleep_until_alarms(time_alarm)
+    time_alarm = alarm.time.TimeAlarm(monotonic_time=time.monotonic() + 30)
+    alarm.exit_and_deep_sleep_until_alarms(time_alarm, boot_button_alarm)

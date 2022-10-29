@@ -1,5 +1,6 @@
 SERIAL_DEVICE=/dev/ttyACM0
 PYFILE=code.py
+PYFILE_COPY=.${PYFILE}.bak
 COMPILED_PYFILE=compiled_code.mpy
 BASE_DEST:=/run/media/$(shell whoami)
 BOOT_DEST=${BASE_DEST}/RPI-RP2
@@ -29,9 +30,10 @@ dev:
 
 dev-compile:
 	watch -n1 \
-		'diff ${DEST}/${COMPILED_PYFILE} ${COMPILED_PYFILE} \
+		'diff ${PYFILE_COPY} ${PYFILE} \
 			&& echo No changes detected \
-			|| make cp-compile'
+			|| make cp-compile \
+			; cp ${PYFILE} ${PYFILE_COPY}'
 
 open-serial-console:
 	# Baud rate is 9600 bits per second
@@ -49,3 +51,11 @@ install-python:
 install-libraries:
 	@echo Installing libraries
 	cp ${LIBS} ${DEST}/lib
+
+download-deps:
+	@echo Read the README to see what deps must be downloaded
+	@echo TODO: Automate this
+
+clean:
+	${PYFILE_COPY}
+	${COMPILED_PYFILE}
