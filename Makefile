@@ -10,7 +10,8 @@ MPY_CROSS_COMPILER=./deps/mpy-cross.static-amd64-linux-8.0.0-beta.3-29-ga0f389e2
 LIBS=./deps/adafruit-circuitpython-bundle-8.x-mpy-20221029/lib/{adafruit_pixelbuf.mpy,neopixel.mpy} \
 		 ./deps/adafruit-circuitpython-framebuf-8.x-mpy-1.4.14/lib/adafruit_framebuf.mpy
 
-FONTS=./deps/adafruit-circuitpython-framebuf-8.x-mpy-1.4.14/examples/font5x8.bin
+ASSETS=./deps/adafruit-circuitpython-framebuf-8.x-mpy-1.4.14/examples/font5x8.bin \
+			 ./art/b.raw ./art/r.raw ./art/hugo_square-bw.raw
 
 EPD=./epaper_2in13_b.py
 COMPILED_EPD=./epaper_2in13_b.mpy
@@ -23,7 +24,7 @@ cp:
 
 cp-compile:
 	${MPY_CROSS_COMPILER} ${PYFILE} -o ${COMPILED_PYFILE}
-	rm ${DEST}/code.py ${DEST}/${COMPILED_PYFILE}
+	rm -f ${DEST}/code.py ${DEST}/${COMPILED_PYFILE}
 	cp main_for_compiled.py ${DEST}/code.py
 	cp ${COMPILED_PYFILE} ${DEST}
 
@@ -56,11 +57,14 @@ install-python:
 	cp ${FIRMWARE} ${BASE_DEST}/RPI-RP2
 	@echo Will loop until ${DEST} is mounted
 	while [ ! -d ${DEST} ] ; do sleep 1 ; done
-	make install-libraries
+	make cp-compile install-libraries
 
-install-libraries: compile-libraries
+install-assets:
+	@echo "Installing assets (fonts, images, etc)"
+	cp ${ASSETS} ${DEST}/
+
+install-libraries: compile-libraries install-assets
 	@echo Installing libraries
-	cp ${FONTS} ${DEST}/
 	cp ${COMPILED_EPD} ${DEST}/lib
 	cp ${LIBS} ${DEST}/lib
 

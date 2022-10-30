@@ -77,7 +77,8 @@ imageblack = FrameBuffer(buffer_black, EPD_WIDTH, EPD_HEIGHT, PIXEL_FORMAT)
 
 
 class EPD_2in13_B:
-    def __init__(self):
+    def __init__(self, init_display=True):
+        """If init_display is False, remember to call init() manually."""
         self.reset_pin = DigitalInOut(EPAPER_RESET_PIN)
         self.reset_pin.direction = Direction.OUTPUT
 
@@ -109,7 +110,8 @@ class EPD_2in13_B:
         self.imagered = FrameBuffer(
             self.buffer_red, self.width, self.height, PIXEL_FORMAT
         )
-        self.init()
+        if init_display:
+            self.init()
 
     def digital_write(self, pin, value):
         pin.value = value
